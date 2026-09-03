@@ -69,11 +69,13 @@ class Anime:
                 "Episode progress cannot be negative or greater than total episodes"
             )
 
-        self.episode_progress = new_progress
+        if self.episode_progress == 0 and new_progress == 1:
+            if self.start_date is None:
+                self.start_date = datetime.date.today()
 
-        if self.episode_progress == 1 and self.start_date is None:
-            self.start_date = datetime.date.today()
             self.change_status(AnimeStatus.WATCHING)
+
+        self.episode_progress = new_progress
 
         if self.episode_progress == self.total_episodes:
             self.change_status(AnimeStatus.COMPLETED)
@@ -86,3 +88,9 @@ class Anime:
             self.end_date = datetime.date.today()
 
         self.status = new_status
+
+    def set_rating(self, new_rating: int):
+        if new_rating < 0 or new_rating > 100:
+            raise ValueError("Rating cannot be negative or greater than 100")
+
+        self.rating = new_rating
